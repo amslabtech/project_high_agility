@@ -84,18 +84,18 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "fwdis_gazebo");
   ros::NodeHandle nh;
 
-  ros::Publisher frw_pub = nh.advertise<std_msgs::Float64>("/fwdis_msgs/front_right_wheel_joint/command", 100);
-  ros::Publisher flw_pub = nh.advertise<std_msgs::Float64>("/fwdis_msgs/front_left_wheel_joint/command", 100);
-  ros::Publisher rrw_pub = nh.advertise<std_msgs::Float64>("/fwdis_msgs/rear_right_wheel_joint/command", 100);
-  ros::Publisher rlw_pub = nh.advertise<std_msgs::Float64>("/fwdis_msgs/rear_left_wheel_joint/command", 100);
-  ros::Publisher frs_pub = nh.advertise<std_msgs::Float64>("/fwdis_msgs/front_right_steering_joint/command", 100);
-  ros::Publisher fls_pub = nh.advertise<std_msgs::Float64>("/fwdis_msgs/front_left_steering_joint/command", 100);
-  ros::Publisher rrs_pub = nh.advertise<std_msgs::Float64>("/fwdis_msgs/rear_right_steering_joint/command", 100);
-  ros::Publisher rls_pub = nh.advertise<std_msgs::Float64>("/fwdis_msgs/rear_left_steering_joint/command", 100);
-  ros::Publisher odom_pub = nh.advertise<nav_msgs::Odometry>("/fwdis_msgs/odometry", 100);
+  ros::Publisher frw_pub = nh.advertise<std_msgs::Float64>("/fwdis/front_right_wheel_joint/command", 100);
+  ros::Publisher flw_pub = nh.advertise<std_msgs::Float64>("/fwdis/front_left_wheel_joint/command", 100);
+  ros::Publisher rrw_pub = nh.advertise<std_msgs::Float64>("/fwdis/rear_right_wheel_joint/command", 100);
+  ros::Publisher rlw_pub = nh.advertise<std_msgs::Float64>("/fwdis/rear_left_wheel_joint/command", 100);
+  ros::Publisher frs_pub = nh.advertise<std_msgs::Float64>("/fwdis/front_right_steering_joint/command", 100);
+  ros::Publisher fls_pub = nh.advertise<std_msgs::Float64>("/fwdis/front_left_steering_joint/command", 100);
+  ros::Publisher rrs_pub = nh.advertise<std_msgs::Float64>("/fwdis/rear_right_steering_joint/command", 100);
+  ros::Publisher rls_pub = nh.advertise<std_msgs::Float64>("/fwdis/rear_left_steering_joint/command", 100);
+  ros::Publisher odom_pub = nh.advertise<nav_msgs::Odometry>("/fwdis/odometry", 100);
 
   ros::Subscriber fwdis_msgs_sub = nh.subscribe("/fwdis/command", 100, command_callback);
-  ros::Subscriber joint_sub = nh.subscribe("/fwdis_msgs/joint_states", 100, joint_callback);
+  ros::Subscriber joint_sub = nh.subscribe("/fwdis/joint_states", 100, joint_callback);
 
   tf::TransformBroadcaster odom_broadcaster;
 
@@ -128,6 +128,8 @@ int main(int argc, char** argv)
   std::cout << inversed_matrix << std::endl;
 
   ros::Rate loop_rate(1.0 / INTERVAL);
+
+  std::cout << "fwdis_gazebo" << std::endl;
 
   while(ros::ok()){
     frw.data = command.front_right_wheel_velocity;

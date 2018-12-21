@@ -45,6 +45,8 @@ int main(int argc, char** argv)
 
   ros::Rate loop_rate(10);
 
+  std::cout << "fwdis_controller" << std::endl;
+
   while(ros::ok()){
     fwdis_msgs::FourWheelDriveIndependentSteering command;
     if(velocity_subscribed){

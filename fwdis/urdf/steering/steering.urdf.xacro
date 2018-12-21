@@ -18,8 +18,9 @@
 
     <link name="${prefix}_steering_link">
       <visual>
+        <origin xyz="0 0 0" rpy="${M_PI/2} 0 ${M_PI/2}"/>
         <geometry>
-          <cylinder radius="${steering_radius}" length="${steering_width}"/>
+          <mesh filename="package://four_wheel_drive_independent_steering/meshes/STL/steering.stl" scale="0.001 0.001 0.001"/>
         </geometry>
       </visual>
       <collision>

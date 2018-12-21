@@ -3,9 +3,9 @@
 
   <xacro:include filename="$(find four_wheel_drive_independent_steering)/urdf/common.xacro"/>
 
-  <property name="wheel_radius" value="0.075"/>
+  <property name="wheel_radius" value="0.100"/>
   <property name="wheel_width" value="0.030"/>
-  <property name="wheel_mass" value="2.0"/>
+  <property name="wheel_mass" value="1.0"/>
 
   <xacro:macro name="wheel" params="prefix parent *joint_origin *joint_axis">
     <joint name="${prefix}_wheel_joint" type="continuous">
@@ -18,18 +18,19 @@
 
     <link name="${prefix}_wheel_link">
       <visual>
+        <origin xyz="0 0.013208 0" rpy="${M_PI/2} 0 ${M_PI/2}"/>
         <geometry>
-          <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+          <mesh filename="package://four_wheel_drive_independent_steering/meshes/STL/wheel2.stl" scale="0.001 0.001 0.001"/>
         </geometry>
       </visual>
       <collision>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="0 0 0" rpy="${M_PI/2} 0 0"/>
         <geometry>
           <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
         </geometry>
       </collision>
       <inertial>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="0 0 0" rpy="${M_PI/2} 0 0"/>
         <cylinder_inertial mass="${wheel_mass}"
           radius="${wheel_radius}" length="${wheel_width}"/>
       </inertial>
