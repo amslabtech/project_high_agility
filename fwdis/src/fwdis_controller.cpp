@@ -6,12 +6,12 @@
 geometry_msgs::Twist velocity;
 bool velocity_subscribed = false;
 
-const double WHEEL_RADIUS = 0.075;//[m]
-const double WHEEL_BASE = 0.50;//[m]
-const double TREAD = 0.50;//[m]
-const double RADIUS = sqrt(pow(WHEEL_BASE, 2) + pow(TREAD, 2)) / 2.0;
-const double THETA = atan(TREAD / WHEEL_BASE);
-const double INTERVAL = 0.1;
+double WHEEL_RADIUS;//[m]
+double WHEEL_BASE;//[m]
+double TREAD;//[m]
+double RADIUS;
+double THETA;
+double INTERVAL;
 
 Eigen::MatrixXd forward_matrix;
 Eigen::VectorXd wheel_velocity;
@@ -27,6 +27,13 @@ int main(int argc, char** argv)
 {
   ros::init(argc, argv, "fwdis_controller");
   ros::NodeHandle nh;
+
+  ros::NodeHandle local_nh("~");
+  local_nh.getParam("/fwdis/WHEEL_RADIUS", WHEEL_RADIUS);
+  local_nh.getParam("/fwdis/WHEEL_BASE", WHEEL_BASE);
+  local_nh.getParam("/fwdis/TREAD", TREAD);
+  RADIUS = sqrt(pow(WHEEL_BASE, 2) + pow(TREAD, 2)) / 2.0;
+  THETA = atan(TREAD / WHEEL_BASE);
 
   ros::Publisher command_pub = nh.advertise<fwdis_msgs::FourWheelDriveIndependentSteering>("/fwdis/command", 100);
   ros::Subscriber velocity_sub = nh.subscribe("/fwdis/velocity", 100, velocity_callback);

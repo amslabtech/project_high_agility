@@ -34,11 +34,11 @@ nav_msgs::Odometry odometry;
 sensor_msgs::JointState joint;
 bool joint_subscribed = false;
 
-const double WHEEL_RADIUS = 0.075;
-const double WHEEL_BASE = 0.50;
-const double TREAD = 0.50;
-const double RADIUS = sqrt(pow(WHEEL_BASE, 2) + pow(TREAD, 2)) / 2.0;
-const double THETA = atan(TREAD / WHEEL_BASE);
+double WHEEL_RADIUS;
+double WHEEL_BASE;
+double TREAD;
+double RADIUS;
+double THETA;
 const double INTERVAL = 0.01;
 
 Eigen::MatrixXd forward_matrix;
@@ -83,6 +83,13 @@ int main(int argc, char** argv)
 {
   ros::init(argc, argv, "fwdis_gazebo");
   ros::NodeHandle nh;
+
+  ros::NodeHandle local_nh("~");
+  local_nh.getParam("/fwdis/WHEEL_RADIUS", WHEEL_RADIUS);
+  local_nh.getParam("/fwdis/WHEEL_BASE", WHEEL_BASE);
+  local_nh.getParam("/fwdis/TREAD", TREAD);
+  RADIUS = sqrt(pow(WHEEL_BASE, 2) + pow(TREAD, 2)) / 2.0;
+  THETA = atan(TREAD / WHEEL_BASE);
 
   ros::Publisher frw_pub = nh.advertise<std_msgs::Float64>("/fwdis/front_right_wheel_joint/command", 100);
   ros::Publisher flw_pub = nh.advertise<std_msgs::Float64>("/fwdis/front_left_wheel_joint/command", 100);
