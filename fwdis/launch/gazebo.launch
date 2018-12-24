@@ -17,8 +17,6 @@
 
   <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)"/>
 
-  <include file="$(find four_wheel_drive_independent_steering)/launch/control.launch"/>
-
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
     args="-urdf -model fwdis -param robot_description"/>
 
