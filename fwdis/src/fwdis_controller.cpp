@@ -12,6 +12,7 @@ double TREAD;//[m]
 double RADIUS;
 double THETA;
 double INTERVAL;
+double MAX_STEERING_ANGLE;// [rad]
 
 Eigen::MatrixXd forward_matrix;
 Eigen::VectorXd wheel_velocity;
@@ -32,6 +33,7 @@ int main(int argc, char** argv)
   local_nh.getParam("/fwdis/WHEEL_RADIUS", WHEEL_RADIUS);
   local_nh.getParam("/fwdis/WHEEL_BASE", WHEEL_BASE);
   local_nh.getParam("/fwdis/TREAD", TREAD);
+  local_nh.getParam("/fwdis/MAX_STEERING_ANGLE", TREAD);
   RADIUS = sqrt(pow(WHEEL_BASE, 2) + pow(TREAD, 2)) / 2.0;
   THETA = atan(TREAD / WHEEL_BASE);
 
@@ -68,31 +70,31 @@ int main(int argc, char** argv)
       command.rear_right_steering_angle = atan2(wheel_velocity(7), wheel_velocity(6));
       command.rear_right_wheel_velocity = sqrt(wheel_velocity(6) * wheel_velocity(6) + wheel_velocity(7) * wheel_velocity(7)) / WHEEL_RADIUS;
 
-      if(command.front_right_steering_angle > M_PI/1.5){
+      if(command.front_right_steering_angle > MAX_STEERING_ANGLE){
         command.front_right_steering_angle -= M_PI;
         command.front_right_wheel_velocity = -command.front_right_wheel_velocity;
-      }else if(command.front_right_steering_angle < -M_PI/1.5){
+      }else if(command.front_right_steering_angle < -MAX_STEERING_ANGLE){
         command.front_right_steering_angle += M_PI;
         command.front_right_wheel_velocity = -command.front_right_wheel_velocity;
       }
-      if(command.front_left_steering_angle > M_PI/1.5){
+      if(command.front_left_steering_angle > MAX_STEERING_ANGLE){
         command.front_left_steering_angle -= M_PI;
         command.front_left_wheel_velocity = -command.front_left_wheel_velocity;
-      }else if(command.front_left_steering_angle < -M_PI/1.5){
+      }else if(command.front_left_steering_angle < -MAX_STEERING_ANGLE){
         command.front_left_steering_angle += M_PI;
         command.front_left_wheel_velocity = -command.front_left_wheel_velocity;
       }
-      if(command.rear_right_steering_angle > M_PI/1.5){
+      if(command.rear_right_steering_angle > MAX_STEERING_ANGLE){
         command.rear_right_steering_angle -= M_PI;
         command.rear_right_wheel_velocity = -command.rear_right_wheel_velocity;
-      }else if(command.rear_right_steering_angle < -M_PI/1.5){
+      }else if(command.rear_right_steering_angle < -MAX_STEERING_ANGLE){
         command.rear_right_steering_angle += M_PI;
         command.rear_right_wheel_velocity = -command.rear_right_wheel_velocity;
       }
-      if(command.rear_left_steering_angle > M_PI/1.5){
+      if(command.rear_left_steering_angle > MAX_STEERING_ANGLE){
         command.rear_left_steering_angle -= M_PI;
         command.rear_left_wheel_velocity = -command.rear_left_wheel_velocity;
-      }else if(command.rear_left_steering_angle < -M_PI/1.5){
+      }else if(command.rear_left_steering_angle < -MAX_STEERING_ANGLE){
         command.rear_left_steering_angle += M_PI;
         command.rear_left_wheel_velocity = -command.rear_left_wheel_velocity;
       }
