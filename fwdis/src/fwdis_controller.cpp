@@ -33,7 +33,7 @@ int main(int argc, char** argv)
   local_nh.getParam("/fwdis/WHEEL_RADIUS", WHEEL_RADIUS);
   local_nh.getParam("/fwdis/WHEEL_BASE", WHEEL_BASE);
   local_nh.getParam("/fwdis/TREAD", TREAD);
-  local_nh.getParam("/fwdis/MAX_STEERING_ANGLE", TREAD);
+  local_nh.getParam("/fwdis/MAX_STEERING_ANGLE", MAX_STEERING_ANGLE);
   RADIUS = sqrt(pow(WHEEL_BASE, 2) + pow(TREAD, 2)) / 2.0;
   THETA = atan(TREAD / WHEEL_BASE);
 
@@ -56,19 +56,25 @@ int main(int argc, char** argv)
 
   std::cout << "fwdis_controller" << std::endl;
 
+  std::cout << forward_matrix << std::endl;
+  std::cout << WHEEL_RADIUS << std::endl;
+  std::cout << WHEEL_BASE << std::endl;
+  std::cout << TREAD << std::endl;
+  std::cout << MAX_STEERING_ANGLE << std::endl;
+
   while(ros::ok()){
     fwdis_msgs::FourWheelDriveIndependentSteering command;
     if(velocity_subscribed){
       robot_velocity << velocity.linear.x, velocity.linear.y, velocity.angular.z;
       wheel_velocity = forward_matrix * robot_velocity;
       command.front_right_steering_angle = atan2(wheel_velocity(1), wheel_velocity(0));
-      command.front_right_wheel_velocity = sqrt(wheel_velocity(0) * wheel_velocity(0) + wheel_velocity(1) * wheel_velocity(1)) / WHEEL_RADIUS;
+      command.front_right_wheel_velocity = sqrt(wheel_velocity(0) * wheel_velocity(0) + wheel_velocity(1) * wheel_velocity(1));
       command.front_left_steering_angle = atan2(wheel_velocity(3), wheel_velocity(2));
-      command.front_left_wheel_velocity = sqrt(wheel_velocity(2) * wheel_velocity(2) + wheel_velocity(3) * wheel_velocity(3)) / WHEEL_RADIUS;
+      command.front_left_wheel_velocity = sqrt(wheel_velocity(2) * wheel_velocity(2) + wheel_velocity(3) * wheel_velocity(3));
       command.rear_left_steering_angle = atan2(wheel_velocity(5), wheel_velocity(4));
-      command.rear_left_wheel_velocity = sqrt(wheel_velocity(4) * wheel_velocity(4) + wheel_velocity(5) * wheel_velocity(5)) / WHEEL_RADIUS;
+      command.rear_left_wheel_velocity = sqrt(wheel_velocity(4) * wheel_velocity(4) + wheel_velocity(5) * wheel_velocity(5));
       command.rear_right_steering_angle = atan2(wheel_velocity(7), wheel_velocity(6));
-      command.rear_right_wheel_velocity = sqrt(wheel_velocity(6) * wheel_velocity(6) + wheel_velocity(7) * wheel_velocity(7)) / WHEEL_RADIUS;
+      command.rear_right_wheel_velocity = sqrt(wheel_velocity(6) * wheel_velocity(6) + wheel_velocity(7) * wheel_velocity(7));
 
       if(command.front_right_steering_angle > MAX_STEERING_ANGLE){
         command.front_right_steering_angle -= M_PI;
