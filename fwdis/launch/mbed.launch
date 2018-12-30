@@ -1,0 +1,7 @@
+<launch>
+
+  <node pkg="rosserial_python" name="steer" type="serial_node.py" args="_port:=/dev/mbed_steer _baud:=115200" ns="fwdis/mbed"/>
+
+  <node pkg="rosserial_python" name="drive" type="serial_node.py" args="_port:=/dev/mbed_drive _baud:=115200" ns="fwdis/mbed"/>
+
+</launch>
