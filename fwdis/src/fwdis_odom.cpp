@@ -155,6 +155,9 @@ void FWDISOdom::process(void)
       odometry.pose.pose.position.x += (vx * cos(yaw) - vy * sin(yaw)) * INTERVAL;
       odometry.pose.pose.position.y += (vx * sin(yaw) + vy * cos(yaw)) * INTERVAL;
       odometry.pose.pose.orientation = tf::createQuaternionMsgFromYaw(yaw + omega * INTERVAL);
+      odometry.twist.twist.linear.x = vx;
+      odometry.twist.twist.linear.y = vy;
+      odometry.twist.twist.angular.z = omega;
     }
     odometry.header.stamp = ros::Time::now();
     odom_pub.publish(odometry);
