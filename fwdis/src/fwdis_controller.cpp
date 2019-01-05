@@ -46,20 +46,20 @@ void velocity_callback(const geometry_msgs::TwistConstPtr &msg)
     _velocity.angular.z = velocity.angular.z + acc_z * INTERVAL;
   }
 
-  if(velocity.linear.x > MAX_VELOCITY){
-    velocity.linear.x = MAX_VELOCITY;
-  }else if(velocity.linear.x < -MAX_VELOCITY){
-    velocity.linear.x = -MAX_VELOCITY;
+  if(_velocity.linear.x > MAX_VELOCITY){
+    _velocity.linear.x = MAX_VELOCITY;
+  }else if(_velocity.linear.x < -MAX_VELOCITY){
+    _velocity.linear.x = -MAX_VELOCITY;
   }
-  if(velocity.linear.y > MAX_VELOCITY){
-    velocity.linear.y = MAX_VELOCITY;
-  }else if(velocity.linear.y < -MAX_VELOCITY){
-    velocity.linear.y = -MAX_VELOCITY;
+  if(_velocity.linear.y > MAX_VELOCITY){
+    _velocity.linear.y = MAX_VELOCITY;
+  }else if(_velocity.linear.y < -MAX_VELOCITY){
+    _velocity.linear.y = -MAX_VELOCITY;
   }
-  if(velocity.angular.z > MAX_ANGULAR_VELOCITY){
-    velocity.angular.z = MAX_ANGULAR_VELOCITY;
-  }else if(velocity.angular.z < -MAX_ANGULAR_VELOCITY){
-    velocity.angular.z = -MAX_ANGULAR_VELOCITY;
+  if(_velocity.angular.z > MAX_ANGULAR_VELOCITY){
+    _velocity.angular.z = MAX_ANGULAR_VELOCITY;
+  }else if(_velocity.angular.z < -MAX_ANGULAR_VELOCITY){
+    _velocity.angular.z = -MAX_ANGULAR_VELOCITY;
   }
   velocity = _velocity;
   velocity_subscribed = true;
