@@ -132,8 +132,8 @@ void FWDISOdom::process(void)
       steer_updated = false;
       double vfr = odom_drive.front_right_wheel_velocity * WHEEL_RADIUS;
       double vfl = odom_drive.front_left_wheel_velocity * WHEEL_RADIUS;
-      double vrl = odom_drive.rear_right_wheel_velocity * WHEEL_RADIUS;
-      double vrr = odom_drive.rear_left_wheel_velocity * WHEEL_RADIUS;
+      double vrr = odom_drive.rear_right_wheel_velocity * WHEEL_RADIUS;
+      double vrl = odom_drive.rear_left_wheel_velocity * WHEEL_RADIUS;
 
       wheel_velocity << vfr * cos(odom_steer.front_right_steering_angle),
                         vfr * sin(odom_steer.front_right_steering_angle),
