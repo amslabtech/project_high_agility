@@ -44,6 +44,9 @@ private:
   tf::TransformBroadcaster odom_broadcaster;
   bool drive_updated;
   bool steer_updated;
+  double omega;
+  double vx;
+  double vy;
 };
 
 //https://robotics.naist.jp/edu/text/?Robotics%2FEigen#b3b26d13
@@ -91,6 +94,9 @@ FWDISOdom::FWDISOdom(void)
   drive_sub = nh.subscribe("/odom/drive", 1, &FWDISOdom::drive_callback, this);
   steer_sub = nh.subscribe("/odom/steer", 1, &FWDISOdom::steer_callback, this);
   reset_sub = nh.subscribe("/odom/reset", 1, &FWDISOdom::reset_callback, this);
+  vx = 0;
+  vy = 0;
+  omega = 0;
 }
 
 void FWDISOdom::process(void)
@@ -150,19 +156,19 @@ void FWDISOdom::process(void)
 
       robot_velocity = inversed_matrix * wheel_velocity;
 
-      double omega = robot_velocity(2);
-      double vx = robot_velocity(0);
-      double vy = robot_velocity(1);
+      omega = robot_velocity(2);
+      vx = robot_velocity(0);
+      vy = robot_velocity(1);
       std::cout << "(vx, vy, w) = " << vx << ", " << vy << ", " << omega << std::endl;
 
-      double yaw = tf::getYaw(odometry.pose.pose.orientation);
-      odometry.pose.pose.position.x += (vx * cos(yaw) - vy * sin(yaw)) * INTERVAL;
-      odometry.pose.pose.position.y += (vx * sin(yaw) + vy * cos(yaw)) * INTERVAL;
-      odometry.pose.pose.orientation = tf::createQuaternionMsgFromYaw(yaw + omega * INTERVAL);
-      odometry.twist.twist.linear.x = vx;
-      odometry.twist.twist.linear.y = vy;
-      odometry.twist.twist.angular.z = omega;
     }
+    double yaw = tf::getYaw(odometry.pose.pose.orientation);
+    odometry.pose.pose.position.x += (vx * cos(yaw) - vy * sin(yaw)) * INTERVAL;
+    odometry.pose.pose.position.y += (vx * sin(yaw) + vy * cos(yaw)) * INTERVAL;
+    odometry.pose.pose.orientation = tf::createQuaternionMsgFromYaw(yaw + omega * INTERVAL);
+    odometry.twist.twist.linear.x = vx;
+    odometry.twist.twist.linear.y = vy;
+    odometry.twist.twist.angular.z = omega;
     odometry.header.stamp = ros::Time::now();
     odom_pub.publish(odometry);
     odom_tf.transform.translation.x = odometry.pose.pose.position.x;
