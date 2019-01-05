@@ -11,8 +11,13 @@ double WHEEL_BASE;//[m]
 double TREAD;//[m]
 double RADIUS;
 double THETA;
-double INTERVAL;
 double MAX_STEERING_ANGLE;// [rad]
+double MAX_VELOCITY;// [m/s]
+double MAX_ACCELERATION;// [m/ss]
+double MAX_ANGULAR_VELOCITY;// [rad/s]
+double MAX_ANGULAR_ACCELERATION;// [rad/ss]
+
+const double INTERVAL = 0.1;// [s]
 
 Eigen::MatrixXd forward_matrix;
 Eigen::VectorXd wheel_velocity;
@@ -20,7 +25,43 @@ Eigen::Vector3d robot_velocity;
 
 void velocity_callback(const geometry_msgs::TwistConstPtr &msg)
 {
-  velocity = *msg;
+  geometry_msgs::Twist _velocity;
+  _velocity = *msg;
+  double acc_x = (_velocity.linear.x - velocity.linear.x) / INTERVAL;
+  double acc_y = (_velocity.linear.y - velocity.linear.y) / INTERVAL;
+  double acc_z = (_velocity.angular.z - velocity.angular.z) / INTERVAL;
+  if(acc_x > MAX_ACCELERATION){
+    _velocity.linear.x = velocity.linear.x + acc_x * INTERVAL;
+  }else if(acc_x < -MAX_ACCELERATION){
+    _velocity.linear.x = velocity.linear.x + acc_x * INTERVAL;
+  }
+  if(acc_y > MAX_ACCELERATION){
+    _velocity.linear.y = velocity.linear.y + acc_y * INTERVAL;
+  }else if(acc_z < -MAX_ACCELERATION){
+    _velocity.linear.y = velocity.linear.y + acc_y * INTERVAL;
+  }
+  if(acc_z > MAX_ANGULAR_ACCELERATION){
+    _velocity.angular.z = velocity.angular.z + acc_z * INTERVAL;
+  }else if(acc_z < -MAX_ANGULAR_ACCELERATION){
+    _velocity.angular.z = velocity.angular.z + acc_z * INTERVAL;
+  }
+
+  if(velocity.linear.x > MAX_VELOCITY){
+    velocity.linear.x = MAX_VELOCITY;
+  }else if(velocity.linear.x < -MAX_VELOCITY){
+    velocity.linear.x = -MAX_VELOCITY;
+  }
+  if(velocity.linear.y > MAX_VELOCITY){
+    velocity.linear.y = MAX_VELOCITY;
+  }else if(velocity.linear.y < -MAX_VELOCITY){
+    velocity.linear.y = -MAX_VELOCITY;
+  }
+  if(velocity.angular.z > MAX_ANGULAR_VELOCITY){
+    velocity.angular.z = MAX_ANGULAR_VELOCITY;
+  }else if(velocity.angular.z < -MAX_ANGULAR_VELOCITY){
+    velocity.angular.z = -MAX_ANGULAR_VELOCITY;
+  }
+  velocity = _velocity;
   velocity_subscribed = true;
 }
 
@@ -34,6 +75,10 @@ int main(int argc, char** argv)
   local_nh.getParam("/fwdis/WHEEL_BASE", WHEEL_BASE);
   local_nh.getParam("/fwdis/TREAD", TREAD);
   local_nh.getParam("/fwdis/MAX_STEERING_ANGLE", MAX_STEERING_ANGLE);
+  local_nh.getParam("/fwdis/MAX_VELOCITY", MAX_VELOCITY);
+  local_nh.getParam("/fwdis/MAX_ACCELERATION", MAX_ACCELERATION);
+  local_nh.getParam("/fwdis/MAX_ANGULAR_VELOCITY", MAX_ANGULAR_VELOCITY);
+  local_nh.getParam("/fwdis/MAX_ANGULAR_ACCELERATION", MAX_ANGULAR_ACCELERATION);
   RADIUS = sqrt(pow(WHEEL_BASE, 2) + pow(TREAD, 2)) / 2.0;
   THETA = atan(TREAD / WHEEL_BASE);
 
@@ -52,7 +97,7 @@ int main(int argc, char** argv)
 
   wheel_velocity.resize(8, 1);
 
-  ros::Rate loop_rate(10);
+  ros::Rate loop_rate(1/INTERVAL);
 
   std::cout << "fwdis_controller" << std::endl;
 
@@ -61,6 +106,10 @@ int main(int argc, char** argv)
   std::cout << WHEEL_BASE << std::endl;
   std::cout << TREAD << std::endl;
   std::cout << MAX_STEERING_ANGLE << std::endl;
+  std::cout << MAX_VELOCITY << std::endl;
+  std::cout << MAX_ACCELERATION << std::endl;
+  std::cout << MAX_ANGULAR_VELOCITY << std::endl;
+  std::cout << MAX_ANGULAR_ACCELERATION << std::endl;
 
   while(ros::ok()){
     fwdis_msgs::FourWheelDriveIndependentSteering command;
