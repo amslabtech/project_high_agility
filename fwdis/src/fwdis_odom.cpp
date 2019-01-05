@@ -139,10 +139,10 @@ void FWDISOdom::process(void)
                         vfr * sin(odom_steer.front_right_steering_angle),
                         vfl * cos(odom_steer.front_left_steering_angle),
                         vfl * sin(odom_steer.front_left_steering_angle),
-                        vrl * cos(odom_steer.rear_right_steering_angle),
-                        vrl * sin(odom_steer.rear_right_steering_angle),
-                        vrr * cos(odom_steer.rear_left_steering_angle),
-                        vrr * sin(odom_steer.rear_left_steering_angle);
+                        vrr * cos(odom_steer.rear_right_steering_angle),
+                        vrr * sin(odom_steer.rear_right_steering_angle),
+                        vrl * cos(odom_steer.rear_left_steering_angle),
+                        vrl * sin(odom_steer.rear_left_steering_angle);
 
       robot_velocity = inversed_matrix * wheel_velocity;
 
