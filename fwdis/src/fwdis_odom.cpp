@@ -136,6 +136,8 @@ void FWDISOdom::process(void)
 
   std::cout << "fwdis_odom" << std::endl;
 
+  double last_time = ros::Time::now().toSec();
+
   while(ros::ok()){
     if(drive_updated && steer_updated){
       drive_updated = false;
@@ -163,9 +165,12 @@ void FWDISOdom::process(void)
 
     }
     double yaw = tf::getYaw(odometry.pose.pose.orientation);
-    odometry.pose.pose.position.x += (vx * cos(yaw) - vy * sin(yaw)) * INTERVAL;
-    odometry.pose.pose.position.y += (vx * sin(yaw) + vy * cos(yaw)) * INTERVAL;
-    odometry.pose.pose.orientation = tf::createQuaternionMsgFromYaw(yaw + omega * INTERVAL);
+    double current_time = ros::Time::now().toSec();
+    double interval = current_time - last_time;
+    last_time = current_time;
+    odometry.pose.pose.position.x += (vx * cos(yaw) - vy * sin(yaw)) * interval;
+    odometry.pose.pose.position.y += (vx * sin(yaw) + vy * cos(yaw)) * interval;
+    odometry.pose.pose.orientation = tf::createQuaternionMsgFromYaw(yaw + omega * interval);
     odometry.twist.twist.linear.x = vx;
     odometry.twist.twist.linear.y = vy;
     odometry.twist.twist.angular.z = omega;
