@@ -3,6 +3,7 @@
 #include <tf/transform_broadcaster.h>
 #include <nav_msgs/Odometry.h>
 #include <geometry_msgs/TransformStamped.h>
+#include <std_msgs/Empty.h>
 #include <Eigen/Dense>
 #include "fwdis_msgs/FourWheelDriveIndependentSteering.h"
 
@@ -25,6 +26,7 @@ public:
   FWDISOdom(void);
   void drive_callback(const fwdis_msgs::FourWheelDriveIndependentSteeringConstPtr&);
   void steer_callback(const fwdis_msgs::FourWheelDriveIndependentSteeringConstPtr&);
+  void reset_callback(const std_msgs::Empty&);
   void process(void);
 
 private:
@@ -32,6 +34,7 @@ private:
   ros::Publisher odom_pub;
   ros::Subscriber drive_sub;
   ros::Subscriber steer_sub;
+  ros::Subscriber reset_sub;
   tf::TransformBroadcaster br;
   fwdis_msgs::FourWheelDriveIndependentSteering fwdis_velocity;
   fwdis_msgs::FourWheelDriveIndependentSteering odom_drive;
@@ -87,6 +90,7 @@ FWDISOdom::FWDISOdom(void)
   odom_pub = nh.advertise<nav_msgs::Odometry>("/odom", 1);
   drive_sub = nh.subscribe("/odom/drive", 1, &FWDISOdom::drive_callback, this);
   steer_sub = nh.subscribe("/odom/steer", 1, &FWDISOdom::steer_callback, this);
+  reset_sub = nh.subscribe("/odom/reset", 1, &FWDISOdom::reset_callback, this);
 }
 
 void FWDISOdom::process(void)
@@ -182,4 +186,11 @@ void FWDISOdom::steer_callback(const fwdis_msgs::FourWheelDriveIndependentSteeri
 {
   odom_steer = *msg;
   steer_updated = true;
+}
+
+void FWDISOdom::reset_callback(const std_msgs::Empty& msg)
+{
+  odometry.pose.pose.position.x = 0;
+  odometry.pose.pose.position.y = 0;
+  odometry.pose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
 }
