@@ -18,8 +18,8 @@ int main(int argc, char** argv)
   ros::NodeHandle nh;
   ros::NodeHandle local_nh("~");
 
-  local_nh.getParam("MAX_VELOCITY", MAX_VELOCITY);
-  local_nh.getParam("MAX_ANGULAR_VELOCITY", MAX_ANGULAR_VELOCITY);
+  local_nh.getParam("/fwdis/MAX_VELOCITY", MAX_VELOCITY);
+  local_nh.getParam("/fwdis/MAX_ANGULAR_VELOCITY", MAX_ANGULAR_VELOCITY);
 
   ros::Publisher velocity_pub = nh.advertise<geometry_msgs::Twist>("/fwdis/velocity", 100);
 
