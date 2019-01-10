@@ -10,4 +10,7 @@
     <param name="VREF" value="$(arg _VREF)"/>
   </node>
 
+  <node pkg="four_wheel_drive_independent_steering" name="fwdis_stopper" type="fwdis_stopper" output="screen">
+  </node>
+
 </launch>

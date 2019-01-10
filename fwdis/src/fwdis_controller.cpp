@@ -1,5 +1,6 @@
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
+#include <std_msgs/Empty.h>
 #include <Eigen/Dense>
 #include "fwdis_msgs/FourWheelDriveIndependentSteering.h"
 
@@ -22,6 +23,8 @@ const double INTERVAL = 0.1;// [s]
 Eigen::MatrixXd forward_matrix;
 Eigen::VectorXd wheel_velocity;
 Eigen::Vector3d robot_velocity;
+
+bool stop_flag = false;
 
 void velocity_callback(const geometry_msgs::TwistConstPtr &msg)
 {
@@ -65,6 +68,16 @@ void velocity_callback(const geometry_msgs::TwistConstPtr &msg)
   velocity_subscribed = true;
 }
 
+void stop_callback(const std_msgs::EmptyConstPtr& msg)
+{
+  stop_flag = true;
+}
+
+void start_callback(const std_msgs::EmptyConstPtr& msg)
+{
+  stop_flag = false;
+}
+
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "fwdis_controller");
@@ -84,6 +97,8 @@ int main(int argc, char** argv)
 
   ros::Publisher command_pub = nh.advertise<fwdis_msgs::FourWheelDriveIndependentSteering>("/fwdis/command", 100);
   ros::Subscriber velocity_sub = nh.subscribe("/fwdis/velocity", 100, velocity_callback);
+  ros::Subscriber stop_sub = nh.subscribe("/stop", 100, stop_callback);
+  ros::Subscriber start_sub = nh.subscribe("/start", 100, start_callback);
 
   forward_matrix.resize(8, 3);
   forward_matrix << 1.0, 0.0,  RADIUS * sin(THETA),
@@ -114,6 +129,10 @@ int main(int argc, char** argv)
   while(ros::ok()){
     fwdis_msgs::FourWheelDriveIndependentSteering command;
     if(velocity_subscribed){
+      if(stop_flag){
+        velocity.linear.x = 0;
+        velocity.linear.y = 0;
+      }
       robot_velocity << velocity.linear.x, velocity.linear.y, velocity.angular.z;
       wheel_velocity = forward_matrix * robot_velocity;
       command.front_right_steering_angle = atan2(wheel_velocity(1), wheel_velocity(0));
