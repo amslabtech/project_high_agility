@@ -2,7 +2,7 @@
 
   <arg name="_HORIZON_T" default="15"/>
   <arg name="_DT" default="0.1"/>
-  <arg name="_VREF" default="0.5"/>
+  <arg name="_VREF" default="1.2"/>
 
   <node pkg="four_wheel_drive_independent_steering" name="fwdis_mpc" type="fwdis_mpc" output="screen">
     <param name="HORIZON_T" value="$(arg _HORIZON_T)"/>
