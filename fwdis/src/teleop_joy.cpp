@@ -42,8 +42,10 @@ int main(int argc, char** argv)
         double omega = (joy_data.axes[5] - joy_data.axes[2]) / 2.0;
         velocity.angular.z = omega * MAX_ANGULAR_VELOCITY;
       }
-
-      velocity_pub.publish(velocity);
+      // L1
+      if(joy_data.buttons[4]){
+        velocity_pub.publish(velocity);
+      }
     }
     ros::spinOnce();
     loop_rate.sleep();
