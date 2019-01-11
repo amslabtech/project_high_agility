@@ -179,6 +179,7 @@ void FWDISOdom::process(void)
     odom_tf.transform.translation.x = odometry.pose.pose.position.x;
     odom_tf.transform.translation.y = odometry.pose.pose.position.y;
     odom_tf.transform.rotation = odometry.pose.pose.orientation;
+    odom_tf.header = odometry.header;
     odom_broadcaster.sendTransform(odom_tf);
 
     ros::spinOnce();
