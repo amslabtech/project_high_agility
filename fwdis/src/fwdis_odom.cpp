@@ -35,13 +35,10 @@ private:
   ros::Subscriber drive_sub;
   ros::Subscriber steer_sub;
   ros::Subscriber reset_sub;
-  tf::TransformBroadcaster br;
   fwdis_msgs::FourWheelDriveIndependentSteering fwdis_velocity;
   fwdis_msgs::FourWheelDriveIndependentSteering odom_drive;
   fwdis_msgs::FourWheelDriveIndependentSteering odom_steer;
   nav_msgs::Odometry odometry;
-  geometry_msgs::TransformStamped odom_tf;
-  tf::TransformBroadcaster odom_broadcaster;
   bool drive_updated;
   bool steer_updated;
   double omega;
@@ -105,8 +102,6 @@ void FWDISOdom::process(void)
   odometry.header.frame_id = "odom";
   odometry.child_frame_id = ROBOT_FRAME;
   odometry.pose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
-  odom_tf.header = odometry.header;
-  odom_tf.child_frame_id = odometry.child_frame_id;
 
   std::cout << "initialize matrix" << std::endl;
 
@@ -176,11 +171,6 @@ void FWDISOdom::process(void)
     odometry.twist.twist.angular.z = omega;
     odometry.header.stamp = ros::Time::now();
     odom_pub.publish(odometry);
-    odom_tf.transform.translation.x = odometry.pose.pose.position.x;
-    odom_tf.transform.translation.y = odometry.pose.pose.position.y;
-    odom_tf.transform.rotation = odometry.pose.pose.orientation;
-    odom_tf.header = odometry.header;
-    odom_broadcaster.sendTransform(odom_tf);
 
     ros::spinOnce();
     loop_rate.sleep();
