@@ -132,6 +132,7 @@ int main(int argc, char** argv)
       if(stop_flag){
         velocity.linear.x = 0;
         velocity.linear.y = 0;
+        velocity.angular.z = 0;
       }
       robot_velocity << velocity.linear.x, velocity.linear.y, velocity.angular.z;
       wheel_velocity = forward_matrix * robot_velocity;
