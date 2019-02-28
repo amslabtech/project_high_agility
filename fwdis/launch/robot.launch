@@ -1,0 +1,7 @@
+<launch>
+
+  <rosparam command="load" file="$(find four_wheel_drive_independent_steering)/config/fwdis.yaml"/>
+  <node pkg="four_wheel_drive_independent_steering" name="fwdis_controller" type="fwdis_controller"/>
+  <node pkg="four_wheel_drive_independent_steering" name="fwdis_odom" type="fwdis_odom"/>
+
+</launch>
