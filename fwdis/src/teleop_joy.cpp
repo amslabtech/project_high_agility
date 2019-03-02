@@ -27,9 +27,9 @@ int main(int argc, char** argv)
   ros::Publisher stop_pub = nh.advertise<std_msgs::Empty>("/stop", 1);
   ros::Publisher start_pub = nh.advertise<std_msgs::Empty>("/start", 1);
 
-  ros::Subscriber joy_sub = nh.subscribe("/joy", 100, joy_callback);
+  ros::Subscriber joy_sub = nh.subscribe("/joy", 1, joy_callback);
 
-  ros::Rate loop_rate(10);
+  ros::Rate loop_rate(20);
 
   while(ros::ok()){
     if(!joy_data.axes.empty()){

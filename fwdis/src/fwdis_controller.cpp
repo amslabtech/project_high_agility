@@ -18,7 +18,7 @@ double MAX_ACCELERATION;// [m/ss]
 double MAX_ANGULAR_VELOCITY;// [rad/s]
 double MAX_ANGULAR_ACCELERATION;// [rad/ss]
 
-const double INTERVAL = 0.1;// [s]
+const double INTERVAL = 0.05;// [s]
 
 Eigen::MatrixXd forward_matrix;
 Eigen::VectorXd wheel_velocity;
@@ -95,10 +95,10 @@ int main(int argc, char** argv)
   RADIUS = sqrt(pow(WHEEL_BASE, 2) + pow(TREAD, 2)) / 2.0;
   THETA = atan(TREAD / WHEEL_BASE);
 
-  ros::Publisher command_pub = nh.advertise<fwdis_msgs::FourWheelDriveIndependentSteering>("/fwdis/command", 100);
-  ros::Subscriber velocity_sub = nh.subscribe("/fwdis/velocity", 100, velocity_callback);
-  ros::Subscriber stop_sub = nh.subscribe("/stop", 100, stop_callback);
-  ros::Subscriber start_sub = nh.subscribe("/start", 100, start_callback);
+  ros::Publisher command_pub = nh.advertise<fwdis_msgs::FourWheelDriveIndependentSteering>("/fwdis/command", 1);
+  ros::Subscriber velocity_sub = nh.subscribe("/fwdis/velocity", 1, velocity_callback);
+  ros::Subscriber stop_sub = nh.subscribe("/stop", 1, stop_callback);
+  ros::Subscriber start_sub = nh.subscribe("/start", 1, start_callback);
 
   forward_matrix.resize(8, 3);
   forward_matrix << 1.0, 0.0,  RADIUS * sin(THETA),
